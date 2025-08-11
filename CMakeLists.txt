@@ -8,7 +8,7 @@ find_package(imgui CONFIG REQUIRED)
 find_package(httplib CONFIG REQUIRED)
 find_package(OpenSSL CONFIG REQUIRED)
 find_package(nlohmann_json CONFIG REQUIRED)
-find_package(Stb REQUIRED)
+#find_package(Stb REQUIRED)
 find_package(CURL CONFIG REQUIRED)
 find_package(glad CONFIG REQUIRED)
 find_path(MINIAUDIO_INCLUDE_DIRS "miniaudio.h")
@@ -37,6 +37,6 @@ target_link_libraries(tt_music_viewer
 
 target_include_directories(tt_music_viewer
         PRIVATE
-        ${Stb_INCLUDE_DIR}
+        #${Stb_INCLUDE_DIR}
         ${MINIAUDIO_INCLUDE_DIRS}
 )
