@@ -11,7 +11,7 @@ void SoundComponent::Render(nlohmann::json music)
 {
     const std::string title = music["music"]["title"];
     const std::string authorName = music["music"]["authorName"];
-    const std::string id = music["music"]["id"].get<std::string>();
+    const std::string id = music["music"]["id"];
     const long long idNum = std::stoll(id);
 
     ImGui::BeginChild("SoundComponent");
@@ -20,7 +20,6 @@ void SoundComponent::Render(nlohmann::json music)
     ImGui::PushID(idNum);
 
     auto& datastore = DataStore::GetInstance();
-    //auto playingSound = datastore.GetCurrentlyPlayingSound();
     if (ImGui::Button("Play"))
     {
         File::DownloadSoundAndLoad(music["music"]["playUrl"], idNum);

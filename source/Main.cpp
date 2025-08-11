@@ -11,6 +11,8 @@
 
 #define ENABLE_EXCEPTION_HANDLER
 
+// TODO: M4A support
+
 int main()
 {
     std::cout << "Tiktok Music Viewer" << std::endl;

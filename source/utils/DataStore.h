@@ -25,7 +25,6 @@ public:
         if (const ma_result result = ma_engine_init(nullptr, &mEngine); result != MA_SUCCESS)
         {
             throw std::runtime_error("Failed to initialize miniaudio engine");
-            return;
         }
     }
 

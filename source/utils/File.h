@@ -196,35 +196,6 @@ public:
         return out_texture;
     }
 
-    static void LoadTexturesFromCache()
-    {
-        for (const auto cachePath = GetCachePath(); const auto& entry : std::filesystem::directory_iterator(cachePath))
-        {
-            if (!entry.is_regular_file())
-                continue;
-
-            int width, height;
-            const auto texture = LoadTextureFromFile(entry.path(), &width, &height);
-            if (texture == -1)
-                continue;
-
-            DataStore::GetInstance().AddTexture(entry.path().filename().string(), texture);
-        }
-    }
-
-    static void LoadSoundsFromCache()
-    {
-        for (const auto cachePath = GetCachePath(); const auto& entry : std::filesystem::directory_iterator(cachePath))
-        {
-            if (!entry.is_regular_file())
-                continue;
-
-            auto name = entry.path().filename().string();
-            std::cout << "Loading sound " << name << " from cache...\n";
-            DataStore::GetInstance().AddSound(name, entry.path());
-        }
-    }
-
     static void DownloadTextureAndLoad(const std::string& url)
     {
         // TODO: Differentiate textures and sounds
@@ -265,20 +236,4 @@ public:
 
         DataStore::GetInstance().AddSound(std::to_string(id), tempFile);
     }
-    // static void DownloadSoundAndLoad(const std::string& url, const long long id)
-    // {
-    //     const std::filesystem::path cachePath = GetCachePath();
-    //     if (const auto filename = cachePath / std::to_string(id).append(""); !std::filesystem::exists(filename))
-    //     {
-    //         std::cout << "Downloading " << url << " to " << filename << "...\n";
-    //         std::string mimeType;
-    //         DownloadFile(url, filename.string(), mimeType);
-    //         DataStore::GetInstance().AddSound(std::to_string(id), filename);
-    //     }
-    //     else
-    //     {
-    //         std::cout << "Skipping " << url << " (already downloaded)\n";
-    //         DataStore::GetInstance().AddSound(std::to_string(id), filename);
-    //     }
-    // }
 };
