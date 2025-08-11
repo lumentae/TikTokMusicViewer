@@ -67,6 +67,9 @@ void DataStore::PlaySound(const long long id)
 
     // start the stored sound (don't copy it)
     ma_sound* soundPtr = it->second.get();
+
+    ma_sound_seek_to_second(soundPtr, 0);
+
     if (const ma_result r = ma_sound_start(soundPtr); r != MA_SUCCESS) {
         std::cerr << "ma_sound_start failed: " << ma_result_description(r) << "\n";
         return;
