@@ -44,6 +44,11 @@ nlohmann::json ApiManager::MusicList(const int cursor, const int count)
 #endif
 }
 
+std::string ApiManager::GetCookie() const
+{
+    return mCookie;
+}
+
 void ApiManager::SetCookie(const std::string& cookie)
 {
     mCookie = cookie;

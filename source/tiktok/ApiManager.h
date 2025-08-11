@@ -15,6 +15,7 @@ public:
 
     void Init();
     nlohmann::json MusicList(int cursor = 0, int count = 20);
+    std::string GetCookie() const;
     void SetCookie(const std::string& cookie);
 
 private:

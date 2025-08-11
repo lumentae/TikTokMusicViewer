@@ -137,7 +137,7 @@ void ImGuiHandler::Render()
     );
 
     auto& api = ApiManager::GetInstance();
-    std::string cookie;
+    std::string cookie = api.GetCookie();
 
     ImGui::Text("Cookie:");
     if (ImGui::InputText("##", &cookie))
