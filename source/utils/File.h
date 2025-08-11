@@ -94,16 +94,14 @@ public:
         CURL* curl = curl_easy_init();
         if (!curl)
         {
-            std::cerr << "Failed to initialize libcurl\n";
-            return false;
+            throw std::runtime_error("Failed to initialize curl");
         }
 
         std::ofstream ofs(output_path, std::ios::binary);
         if (!ofs)
         {
-            std::cerr << "Failed to open output file: " << output_path << "\n";
             curl_easy_cleanup(curl);
-            return false;
+            throw std::runtime_error("Failed to open file: " + output_path);
         }
 
         curl_easy_setopt(curl, CURLOPT_URL, url.c_str());
@@ -113,10 +111,9 @@ public:
 
         if (const CURLcode res = curl_easy_perform(curl); res != CURLE_OK)
         {
-            std::cerr << "curl_easy_perform() failed: " << curl_easy_strerror(res) << "\n";
             ofs.close();
             curl_easy_cleanup(curl);
-            return false;
+            throw std::runtime_error("curl_easy_perform() failed");
         }
 
         char* contentType = nullptr;
@@ -130,87 +127,83 @@ public:
     }
 
     // Do not use
-    static bool LoadTextureFromMemory(const void* data, const size_t data_size, GLuint* out_texture, int* out_width,
-                                      int* out_height)
-    {
-        // Load from file
-        int image_width = 0;
-        int image_height = 0;
-        unsigned char* image_data = stbi_load_from_memory(static_cast<const unsigned char*>(data),
-                                                          static_cast<int>(data_size), &image_width, &image_height,
-                                                          nullptr, 4);
-        if (image_data == nullptr)
-            return false;
-
-        // Create a OpenGL texture identifier
-        GLuint image_texture;
-        glGenTextures(1, &image_texture);
-        glBindTexture(GL_TEXTURE_2D, image_texture);
-
-        // Setup filtering parameters for display
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-
-        // Upload pixels into texture
-        glPixelStorei(GL_UNPACK_ROW_LENGTH, 0);
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, image_width, image_height, 0, GL_RGBA, GL_UNSIGNED_BYTE, image_data);
-        stbi_image_free(image_data);
-
-        *out_texture = image_texture;
-        *out_width = image_width;
-        *out_height = image_height;
-
-        return true;
-    }
-
-    // Do not use
-    static bool LoadTextureFromFile(const char* file_name, GLuint* out_texture, int* out_width, int* out_height)
-    {
-        FILE* f;
-        fopen_s(&f, file_name, "rb");
-        if (f == nullptr)
-            return false;
-
-        fseek(f, 0, SEEK_END);
-        const auto file_size = static_cast<size_t>(ftell(f));
-        if (file_size == -1)
-            return false;
-
-        fseek(f, 0, SEEK_SET);
-        void* file_data = IM_ALLOC(file_size);
-        fread(file_data, 1, file_size, f);
-        fclose(f);
-
-        const bool ret = LoadTextureFromMemory(file_data, file_size, out_texture, out_width, out_height);
-        IM_FREE(file_data);
-        return ret;
-    }
-
-    static GLuint LoadTextureFromFile(const std::filesystem::path& file, int* out_width, int* out_height)
-    {
-        GLuint out_texture;
-        if (!LoadTextureFromFile(file.string().c_str(), &out_texture, out_width, out_height))
-            return -1;
-
-        DataStore::GetInstance().AddTexture(file.filename().string(), out_texture);
-        return out_texture;
-    }
-
-    static void DownloadTextureAndLoad(const std::string& url)
-    {
-        // TODO: Differentiate textures and sounds
-        const std::filesystem::path cachePath = GetCachePath();
-        if (const auto filename = cachePath / url.substr(url.find_last_of('/') + 1); !std::filesystem::exists(filename))
-        {
-            std::cout << "Downloading " << url << " to " << filename << "...\n";
-            DownloadFile(url, filename.string());
-            LoadTextureFromFile(filename, nullptr, nullptr);
-        }
-        else
-        {
-            std::cout << "Skipping " << url << " (already downloaded)\n";
-        }
-    }
+    //static bool LoadTextureFromMemory(const void* data, const size_t data_size, GLuint* out_texture, int* out_width,
+    //                                  int* out_height)
+    //{
+    //    // Load from file
+    //    int image_width = 0;
+    //    int image_height = 0;
+    //    unsigned char* image_data = stbi_load_from_memory(static_cast<const unsigned char*>(data),
+    //                                                      static_cast<int>(data_size), &image_width, &image_height,
+    //                                                      nullptr, 4);
+    //    if (image_data == nullptr)
+    //        return false;
+    //
+    //    // Create a OpenGL texture identifier
+    //    GLuint image_texture;
+    //    glGenTextures(1, &image_texture);
+    //    glBindTexture(GL_TEXTURE_2D, image_texture);
+    //
+    //    // Setup filtering parameters for display
+    //    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    //    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    //
+    //    // Upload pixels into texture
+    //    glPixelStorei(GL_UNPACK_ROW_LENGTH, 0);
+    //    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, image_width, image_height, 0, GL_RGBA, GL_UNSIGNED_BYTE, image_data);
+    //    stbi_image_free(image_data);
+    //
+    //    *out_texture = image_texture;
+    //    *out_width = image_width;
+    //    *out_height = image_height;
+    //
+    //    return true;
+    //}
+    //
+    //// Do not use
+    //static bool LoadTextureFromFile(const char* file_name, GLuint* out_texture, int* out_width, int* out_height)
+    //{
+    //    FILE* f;
+    //    fopen_s(&f, file_name, "rb");
+    //    if (f == nullptr)
+    //        return false;
+    //
+    //    fseek(f, 0, SEEK_END);
+    //    const auto file_size = static_cast<size_t>(ftell(f));
+    //    if (file_size == -1)
+    //        return false;
+    //
+    //    fseek(f, 0, SEEK_SET);
+    //    void* file_data = IM_ALLOC(file_size);
+    //    fread(file_data, 1, file_size, f);
+    //    fclose(f);
+    //
+    //    const bool ret = LoadTextureFromMemory(file_data, file_size, out_texture, out_width, out_height);
+    //    IM_FREE(file_data);
+    //    return ret;
+    //}
+    //
+    //static GLuint LoadTextureFromFile(const std::filesystem::path& file, int* out_width, int* out_height)
+    //{
+    //    GLuint out_texture;
+    //    if (!LoadTextureFromFile(file.string().c_str(), &out_texture, out_width, out_height))
+    //        return -1;
+    //
+    //    DataStore::GetInstance().AddTexture(file.filename().string(), out_texture);
+    //    return out_texture;
+    //}
+    //
+    //static void DownloadTextureAndLoad(const std::string& url)
+    //{
+    //    // TODO: Differentiate textures and sounds
+    //    const std::filesystem::path cachePath = GetCachePath();
+    //    if (const auto filename = cachePath / url.substr(url.find_last_of('/') + 1); !std::filesystem::exists(filename))
+    //    {
+    //        std::cout << "Downloading " << url << " to " << filename << "...\n";
+    //        DownloadFile(url, filename.string());
+    //        LoadTextureFromFile(filename, nullptr, nullptr);
+    //    }
+    //}
 
     static void DownloadSoundAndLoad(const std::string& url, const long long id) {
         const std::filesystem::path cachePath = GetCachePath();
@@ -222,9 +215,9 @@ public:
             std::string mimeType;
             std::cout << "Downloading " << url << "...\n";
 
-            if (!DownloadFile(url, tempFile.string(), mimeType)) {
-                std::cerr << "Failed to download " << url << "\n";
-                return;
+            if (!DownloadFile(url, tempFile.string(), mimeType))
+            {
+                throw std::runtime_error("Failed to download " + url);
             }
 
             if (const std::string ext = GetExtensionFromMime(mimeType); !ext.empty()) {

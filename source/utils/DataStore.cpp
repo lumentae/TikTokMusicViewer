@@ -26,9 +26,8 @@ void DataStore::AddSound(const std::string& name, const std::filesystem::path& p
 
     const auto p = new ma_sound();
     if (const ma_result r = ma_sound_init_from_file(&mEngine, path.string().c_str(), 0, nullptr, nullptr, p); r != MA_SUCCESS) {
-        std::cerr << "Failed to load sound " << path << ": " << ma_result_description(r) << "\n";
         delete p;
-        return;
+        throw std::runtime_error("Failed to load sound " + path.string() + ": " + ma_result_description(r));
     }
 
     // custom deleter ensures ma_sound_uninit gets called
@@ -53,14 +52,13 @@ void DataStore::PlaySound(const long long id)
     const std::string key = std::to_string(id); // must match how you called AddSound
     const auto it = mSounds.find(key);
     if (it == mSounds.end()) {
-        std::cerr << "Sound not found for id=" << id << "\n";
-        return;
+        throw std::runtime_error("Sound not found for id=" + std::to_string(id));
     }
 
     // stop previous (if any)
     if (mCurrentlyPlaying) {
         if (const ma_result r = ma_sound_stop(mCurrentlyPlaying); r != MA_SUCCESS) {
-            std::cerr << "ma_sound_stop failed: " << ma_result_description(r) << "\n";
+            throw std::runtime_error("ma_sound_stop failed");
         }
         mCurrentlyPlaying = nullptr;
     }
@@ -71,8 +69,7 @@ void DataStore::PlaySound(const long long id)
     ma_sound_seek_to_second(soundPtr, 0);
 
     if (const ma_result r = ma_sound_start(soundPtr); r != MA_SUCCESS) {
-        std::cerr << "ma_sound_start failed: " << ma_result_description(r) << "\n";
-        return;
+        throw std::runtime_error("ma_sound_start failed");
     }
 
     mCurrentlyPlaying = soundPtr;

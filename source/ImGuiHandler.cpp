@@ -50,8 +50,7 @@ void ImGuiHandler::Init()
 
     if (!gladLoadGLLoader(reinterpret_cast<GLADloadproc>(glfwGetProcAddress)))
     {
-        std::cout << "Failed to initialize OpenGL context" << std::endl;
-        return;
+        throw std::runtime_error("Failed to initialize GLAD");
     }
 
     // Setup Dear ImGui context
