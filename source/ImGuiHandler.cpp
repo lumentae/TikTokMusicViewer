@@ -41,7 +41,7 @@ void ImGuiHandler::Init()
     const float main_scale = ImGui_ImplGlfw_GetContentScaleForMonitor(glfwGetPrimaryMonitor());
     // Valid on GLFW 3.3+ only
     GLFWwindow* window = glfwCreateWindow(static_cast<int>(1280 * main_scale), static_cast<int>(800 * main_scale),
-                                          "Dear ImGui GLFW+OpenGL3 example", nullptr, nullptr);
+                                          "Tiktok Music Viewer", nullptr, nullptr);
     if (window == nullptr)
         return;
 
