@@ -5,6 +5,7 @@ void ApiManager::Init()
 {
     mClient = httplib::Client("https://www.tiktok.com");
     mClient.set_follow_location(true);
+    mCookie = File::ReadFile("cookie.txt");
 
     mParams.emplace("appId", "1988");
     mParams.emplace("secUid", "MS4wLjABAAAARLr2tuCQODjwlNVKePpG90sPsMr5w1y_jCnx-cpBjpO39dMSXMaJRRKvr1taYI_Z");
@@ -23,16 +24,15 @@ void ApiManager::Init()
     mHeaders.emplace("Sec-Fetch-Mode", "cors");
     mHeaders.emplace("Sec-Fetch-Site", "same-origin");
     mHeaders.emplace("Referer", "https://www.tiktok.com/tiktokstudio/upload?from=creator_center");
-
-    mCookie = File::ReadFile("cookie.txt");
 }
 
 nlohmann::json ApiManager::MusicList(const int cursor, const int count)
 {
+#if 0
     std::cout << "Loading music list... [cursor=" << cursor << ";count=" << count << "]" << std::endl;
     return nlohmann::json::parse(File::ReadFile("music_list.json"));
-#if 0
-    assert(count < 35);
+#else
+    assert(count <= 35);
 
     httplib::Params params = mParams;
     params.emplace("cursor", std::to_string(cursor));
