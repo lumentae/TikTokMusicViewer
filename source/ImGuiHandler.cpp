@@ -1,11 +1,10 @@
 #include "ImGuiHandler.h"
 
-#include <glad/glad.h>
 #include "imgui.h"
 #include "imgui_impl_glfw.h"
 #include "imgui_impl_opengl3.h"
+#include "imgui_impl_opengl3_loader.h"
 #include "imgui_stdlib.h"
-#include "imgui_freetype.h"
 #include <cstdio>
 #define GL_SILENCE_DEPRECATION
 #include <GLFW/glfw3.h>
@@ -48,11 +47,6 @@ void ImGuiHandler::Init()
 
     glfwMakeContextCurrent(window);
     glfwSwapInterval(1); // Enable vsync
-
-    if (!gladLoadGLLoader(reinterpret_cast<GLADloadproc>(glfwGetProcAddress)))
-    {
-        throw std::runtime_error("Failed to initialize GLAD");
-    }
 
     // Setup Dear ImGui context
     IMGUI_CHECKVERSION();
@@ -139,6 +133,7 @@ void ImGuiHandler::Render()
     );
 
     auto& api = ApiManager::GetInstance();
+    auto& datastore = DataStore::GetInstance();
     std::string cookie = api.GetCookie();
 
     ImGui::Text("Cookie:");
@@ -146,6 +141,8 @@ void ImGuiHandler::Render()
     {
         api.SetCookie(cookie);
     }
+    if (const auto looptext = datastore.GetLooping() ? "Stop Looping" : "Loop"; ImGui::Button(looptext))
+        datastore.Loop();
 
     ImGui::Separator();
 

@@ -1,9 +1,6 @@
 #pragma once
 #include <functional>
 #include <iostream>
-#include <string>
-#include <unordered_map>
-#include <glad/glad.h>
 
 #include "miniaudio.h"
 
@@ -33,8 +30,9 @@ public:
     [[nodiscard]] ma_sound* GetCurrentlyPlaying() const;
     [[nodiscard]] long long GetCurrentlyPlayingId() const;
     void PlaySound(long long id);
+    void Loop();
+    bool GetLooping() const;
     void StopSound();
-    void Reset();
 
 private:
     DataStore() = default;
@@ -43,4 +41,6 @@ private:
     ma_sound* mCurrentlyPlaying = nullptr;
     long long mCurrentlyPlayingId = 0;
     ma_engine mEngine;
+
+    bool mLooping = false;
 };
