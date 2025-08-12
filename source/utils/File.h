@@ -226,7 +226,5 @@ public:
                 tempFile = newFile;
             }
         }
-
-        DataStore::GetInstance().AddSound(std::to_string(id), tempFile);
     }
 };

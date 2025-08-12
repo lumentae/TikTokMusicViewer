@@ -20,10 +20,17 @@ void SoundComponent::Render(nlohmann::json music)
     ImGui::PushID(idNum);
 
     auto& datastore = DataStore::GetInstance();
-    if (ImGui::Button("Play"))
+    if (const std::string playPause = datastore.GetCurrentlyPlayingId() == idNum ? "Pause" : "Play"; ImGui::Button(playPause.c_str()))
     {
-        File::DownloadSoundAndLoad(music["music"]["playUrl"], idNum);
-        datastore.PlaySound(idNum);
+        if (playPause == "Pause")
+        {
+            datastore.StopSound();
+        }
+        else
+        {
+            File::DownloadSoundAndLoad(music["music"]["playUrl"], idNum);
+            datastore.PlaySound(idNum);
+        }
     }
     ImGui::PopID();
     ImGui::Separator();

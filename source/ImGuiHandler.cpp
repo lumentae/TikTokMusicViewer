@@ -5,6 +5,7 @@
 #include "imgui_impl_glfw.h"
 #include "imgui_impl_opengl3.h"
 #include "imgui_stdlib.h"
+#include "imgui_freetype.h"
 #include <cstdio>
 #define GL_SILENCE_DEPRECATION
 #include <GLFW/glfw3.h>
@@ -56,6 +57,8 @@ void ImGuiHandler::Init()
     // Setup Dear ImGui context
     IMGUI_CHECKVERSION();
     ImGui::CreateContext();
+    const ImGuiIO& io = ImGui::GetIO();
+    (void)io;
 
     // Setup Dear ImGui style
     ImGui::StyleColorsDark();
@@ -63,6 +66,13 @@ void ImGuiHandler::Init()
     // Setup scaling
     ImGuiStyle& style = ImGui::GetStyle();
     style.ScaleAllSizes(main_scale);
+
+    // TODO: Emojis
+    //io.Fonts->AddFontFromFileTTF("assets/NotoSans-Regular.ttf", 16.0f);
+    //static ImFontConfig cfg;
+    //cfg.MergeMode = true;
+    //cfg.FontLoaderFlags |= ImGuiFreeTypeLoaderFlags_LoadColor;
+    //io.Fonts->AddFontFromFileTTF("assets/", 16.0f, &cfg);
 
     // Setup Platform/Renderer backends
     ImGui_ImplGlfw_InitForOpenGL(window, true);
@@ -147,7 +157,7 @@ void ImGuiHandler::Render()
         instance.mShouldUpdateMusicList = false;
     }
 
-    int cursor = musicList["cursor"].get<int>();
+    //int cursor = musicList["cursor"].get<int>();
     for (const auto& music : musicList["musicList"])
     {
         SoundComponent::Render(music);

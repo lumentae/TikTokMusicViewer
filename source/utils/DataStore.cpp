@@ -10,38 +10,6 @@
 #undef PlaySound
 #endif
 
-GLuint DataStore::GetTexture(const std::string& name)
-{
-    return mTextures[name];
-}
-
-void DataStore::AddTexture(const std::string& name, const GLuint texture)
-{
-    mTextures[name] = texture;
-}
-
-void DataStore::AddSound(const std::string& name, const std::filesystem::path& path)
-{
-    if (mSounds.contains(name)) return; // already loaded
-
-    const auto p = new ma_sound();
-    if (const ma_result r = ma_sound_init_from_file(&mEngine, path.string().c_str(), 0, nullptr, nullptr, p); r != MA_SUCCESS) {
-        delete p;
-        throw std::runtime_error("Failed to load sound " + path.string() + ": " + ma_result_description(r));
-    }
-
-    // custom deleter ensures ma_sound_uninit gets called
-    SoundPtr sp(p, [](ma_sound* s) {
-        if (s) {
-            ma_sound_uninit(s);
-            delete s;
-        }
-    });
-
-    mSounds[name] = std::move(sp);
-    std::cout << "Loaded sound: " << path << " (key=" << name << ")\n";
-}
-
 ma_sound* DataStore::GetCurrentlyPlaying() const
 {
     return mCurrentlyPlaying;
@@ -49,46 +17,54 @@ ma_sound* DataStore::GetCurrentlyPlaying() const
 
 void DataStore::PlaySound(const long long id)
 {
-    const std::string key = std::to_string(id); // must match how you called AddSound
-    const auto it = mSounds.find(key);
-    if (it == mSounds.end()) {
-        throw std::runtime_error("Sound not found for id=" + std::to_string(id));
+    const std::string key = std::to_string(id);
+    const auto path = File::GetFileFromCacheByName(key);
+
+    const auto sound = new ma_sound();
+    if (const auto r = ma_sound_init_from_file(&mEngine, path.string().c_str(), MA_SOUND_FLAG_STREAM, nullptr, nullptr, sound); r != MA_SUCCESS)
+    {
+        delete sound;
+        throw std::runtime_error("Failed to load sound " + path.string() + ": " + ma_result_description(r));
     }
 
-    // stop previous (if any)
-    if (mCurrentlyPlaying) {
-        if (const ma_result r = ma_sound_stop(mCurrentlyPlaying); r != MA_SUCCESS) {
-            throw std::runtime_error("ma_sound_stop failed");
-        }
-        mCurrentlyPlaying = nullptr;
-    }
+    StopSound();
 
-    // start the stored sound (don't copy it)
-    ma_sound* soundPtr = it->second.get();
-
-    ma_sound_seek_to_second(soundPtr, 0);
-
-    if (const ma_result r = ma_sound_start(soundPtr); r != MA_SUCCESS) {
+    if (const ma_result r = ma_sound_seek_to_second(sound, 0); r != MA_SUCCESS)
+    {
+        StopSound();
+        delete sound;
         throw std::runtime_error("ma_sound_start failed");
     }
 
-    mCurrentlyPlaying = soundPtr;
+    if (const ma_result r = ma_sound_start(sound); r != MA_SUCCESS)
+    {
+        StopSound();
+        delete sound;
+        throw std::runtime_error("ma_sound_start failed");
+    }
+
+    mCurrentlyPlaying = sound;
+    mCurrentlyPlayingId = id;
+}
+
+void DataStore::StopSound()
+{
+    if (mCurrentlyPlaying)
+    {
+        ma_sound_stop(mCurrentlyPlaying);
+        ma_sound_uninit(mCurrentlyPlaying);
+        delete mCurrentlyPlaying;
+        mCurrentlyPlayingId = 0;
+    }
+}
+
+long long DataStore::GetCurrentlyPlayingId() const
+{
+    return mCurrentlyPlayingId;
 }
 
 DataStore::~DataStore()
 {
+    StopSound();
     ma_engine_uninit(&mEngine);
-    if (!mTextures.empty())
-    {
-        std::cout << "Deleting " << mTextures.size() << " textures...\n";
-        for (auto& texID : mTextures | std::views::values)
-        {
-            glDeleteTextures(1, &texID);
-        }
-    }
-    mSounds.clear();
-    if (mCurrentlyPlaying) {
-        ma_sound_stop(mCurrentlyPlaying);
-        mCurrentlyPlaying = nullptr;
-    }
 }

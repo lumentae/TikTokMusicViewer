@@ -14,6 +14,8 @@
 class DataStore
 {
 public:
+    using SoundPtr = std::unique_ptr<ma_sound, std::function<void(ma_sound*)>>;
+
     static DataStore& GetInstance()
     {
         static DataStore instance;
@@ -28,20 +30,16 @@ public:
         }
     }
 
-    GLuint GetTexture(const std::string& name);
-    void AddTexture(const std::string& name, GLuint texture);
-    void AddSound(const std::string& name, const std::filesystem::path& path);
-    ma_sound* GetCurrentlyPlaying() const;
+    [[nodiscard]] ma_sound* GetCurrentlyPlaying() const;
+    [[nodiscard]] long long GetCurrentlyPlayingId() const;
     void PlaySound(long long id);
+    void StopSound();
 
 private:
     DataStore() = default;
     ~DataStore();
 
-    std::unordered_map<std::string, GLuint> mTextures{};
-
-    using SoundPtr = std::unique_ptr<ma_sound, std::function<void(ma_sound*)>>;
-    std::unordered_map<std::string, SoundPtr> mSounds{};
     ma_sound* mCurrentlyPlaying = nullptr;
+    long long mCurrentlyPlayingId = 0;
     ma_engine mEngine;
 };
