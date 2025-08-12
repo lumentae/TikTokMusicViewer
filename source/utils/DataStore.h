@@ -34,6 +34,7 @@ public:
     [[nodiscard]] long long GetCurrentlyPlayingId() const;
     void PlaySound(long long id);
     void StopSound();
+    void Reset();
 
 private:
     DataStore() = default;

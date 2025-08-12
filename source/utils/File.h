@@ -128,8 +128,6 @@ public:
     }
 
     static void DownloadSoundAndLoad(const std::string& url, const long long id) {
-        const std::filesystem::path cachePath = GetCachePath();
-
         // Temporary path without extension
         std::filesystem::path tempFile = GetFileFromCacheByName(std::to_string(id));
 
@@ -144,6 +142,15 @@ public:
                 std::filesystem::rename(tempFile, newFile);
                 tempFile = newFile;
             }
+        }
+    }
+
+    static void ConvertFile(const std::filesystem::path& inputPath, const std::filesystem::path& outputPath)
+    {
+        const std::string cmd = "ffmpeg -y -v error -i \"" + inputPath.string() + "\" \"" + outputPath.string() + "\"";
+
+        if (const int result = std::system(cmd.c_str()); result != 0) {
+            throw std::runtime_error("FFmpeg failed to convert: " + inputPath.string());
         }
     }
 };

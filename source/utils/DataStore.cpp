@@ -17,8 +17,23 @@ ma_sound* DataStore::GetCurrentlyPlaying() const
 
 void DataStore::PlaySound(const long long id)
 {
+    std::cout << "Playing sound " << id << std::endl;
+
     const std::string key = std::to_string(id);
-    const auto path = File::GetFileFromCacheByName(key);
+    auto path = File::GetFileFromCacheByName(key);
+
+    if (path.extension() == ".m4a")
+    {
+        const std::filesystem::path replacement{".mp3"};
+        std::filesystem::path replacementPath = path;
+        replacementPath.replace_extension(replacement);
+
+        if (!std::filesystem::exists(replacementPath))
+        {
+            File::ConvertFile(path, replacementPath);
+        }
+        path = replacementPath;
+    }
 
     const auto sound = new ma_sound();
     if (const auto r = ma_sound_init_from_file(&mEngine, path.string().c_str(), MA_SOUND_FLAG_STREAM, nullptr, nullptr, sound); r != MA_SUCCESS)
@@ -31,14 +46,14 @@ void DataStore::PlaySound(const long long id)
 
     if (const ma_result r = ma_sound_seek_to_second(sound, 0); r != MA_SUCCESS)
     {
-        StopSound();
+        Reset();
         delete sound;
         throw std::runtime_error("ma_sound_start failed");
     }
 
     if (const ma_result r = ma_sound_start(sound); r != MA_SUCCESS)
     {
-        StopSound();
+        Reset();
         delete sound;
         throw std::runtime_error("ma_sound_start failed");
     }
@@ -48,6 +63,15 @@ void DataStore::PlaySound(const long long id)
 }
 
 void DataStore::StopSound()
+{
+    if (mCurrentlyPlaying)
+    {
+        ma_sound_stop(mCurrentlyPlaying);
+        mCurrentlyPlayingId = 0;
+    }
+}
+
+void DataStore::Reset()
 {
     if (mCurrentlyPlaying)
     {
@@ -65,6 +89,6 @@ long long DataStore::GetCurrentlyPlayingId() const
 
 DataStore::~DataStore()
 {
-    StopSound();
+    Reset();
     ma_engine_uninit(&mEngine);
 }
