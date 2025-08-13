@@ -137,7 +137,7 @@ void ImGuiHandler::Render()
     std::string cookie = api.GetCookie();
 
     ImGui::Text("Cookie:");
-    if (ImGui::InputText("##", &cookie))
+    if (ImGui::InputText("##", &cookie, ImGuiInputTextFlags_Password | ImGuiInputTextFlags_AlwaysOverwrite))
     {
         api.SetCookie(cookie);
     }
