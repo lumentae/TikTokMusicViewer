@@ -33,6 +33,7 @@ public:
     void Loop();
     bool GetLooping() const;
     void StopSound();
+    void Reset();
 
 private:
     DataStore() = default;

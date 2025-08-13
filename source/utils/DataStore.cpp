@@ -38,27 +38,28 @@ void DataStore::PlaySound(const long long id)
     const auto sound = new ma_sound();
     if (const auto r = ma_sound_init_from_file(&mEngine, path.string().c_str(), MA_SOUND_FLAG_STREAM, nullptr, nullptr, sound); r != MA_SUCCESS)
     {
-        StopSound();
+        Reset();
         delete sound;
         throw std::runtime_error("Failed to load sound " + path.string() + ": " + ma_result_description(r));
     }
 
-    StopSound();
-
     if (const ma_result r = ma_sound_seek_to_second(sound, 0); r != MA_SUCCESS)
     {
-        StopSound();
+        Reset();
         delete sound;
         throw std::runtime_error("ma_sound_start failed");
     }
 
     if (const ma_result r = ma_sound_start(sound); r != MA_SUCCESS)
     {
-        StopSound();
+        Reset();
         delete sound;
         throw std::runtime_error("ma_sound_start failed");
     }
 
+    ma_sound_set_looping(sound, mLooping);
+
+    Reset();
     mCurrentlyPlaying = sound;
     mCurrentlyPlayingId = id;
 }
@@ -81,6 +82,15 @@ void DataStore::StopSound()
     if (mCurrentlyPlaying)
     {
         ma_sound_stop(mCurrentlyPlaying);
+        mCurrentlyPlayingId = 0;
+    }
+}
+
+void DataStore::Reset()
+{
+    if (mCurrentlyPlaying)
+    {
+        ma_sound_stop(mCurrentlyPlaying);
         ma_sound_uninit(mCurrentlyPlaying);
         delete mCurrentlyPlaying;
         mCurrentlyPlayingId = 0;
@@ -94,6 +104,6 @@ long long DataStore::GetCurrentlyPlayingId() const
 
 DataStore::~DataStore()
 {
-    Reset();
+    StopSound();
     ma_engine_uninit(&mEngine);
 }
