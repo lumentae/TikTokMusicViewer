@@ -5,7 +5,8 @@
 #endif
 
 #include "imgui.h"
-#include "../utils/File.h"
+#include "utils/File.h"
+#include "utils/DataStore.h"
 
 void SoundComponent::Render(nlohmann::json music)
 {
@@ -24,7 +25,7 @@ void SoundComponent::Render(nlohmann::json music)
     {
         if (playPause == "Pause")
         {
-            datastore.StopSound();
+            datastore.Reset();
         }
         else
         {

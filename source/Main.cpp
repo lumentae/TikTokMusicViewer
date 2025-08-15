@@ -2,10 +2,7 @@
 
 #include "ImGuiHandler.h"
 #include "tiktok/ApiManager.h"
-#define STB_IMAGE_IMPLEMENTATION
-#include "stb_image.h"
 #define MINIAUDIO_IMPLEMENTATION
-#define MA_ENABLE_MP4
 #include "miniaudio.h"
 #include "utils/DataStore.h"
 

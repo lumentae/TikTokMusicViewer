@@ -28,8 +28,8 @@ void ApiManager::Init()
 
 nlohmann::json ApiManager::MusicList(const int cursor, const int count)
 {
-#if 0
     std::cout << "Loading music list... [cursor=" << cursor << ";count=" << count << "]" << std::endl;
+#if 0
     return nlohmann::json::parse(File::ReadFile("music_list.json"));
 #else
     assert(count <= 35);

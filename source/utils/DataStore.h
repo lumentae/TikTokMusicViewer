@@ -12,8 +12,6 @@
 class DataStore
 {
 public:
-    using SoundPtr = std::unique_ptr<ma_sound, std::function<void(ma_sound*)>>;
-
     static DataStore& GetInstance()
     {
         static DataStore instance;
@@ -32,7 +30,7 @@ public:
     [[nodiscard]] long long GetCurrentlyPlayingId() const;
     void PlaySound(long long id);
     void Loop();
-    bool GetLooping() const;
+    [[nodiscard]] bool GetLooping() const;
     void StopSound();
     void Reset();
 
@@ -42,7 +40,7 @@ private:
 
     ma_sound* mCurrentlyPlaying = nullptr;
     long long mCurrentlyPlayingId = 0;
-    ma_engine mEngine;
+    ma_engine mEngine{};
 
     bool mLooping = false;
 };

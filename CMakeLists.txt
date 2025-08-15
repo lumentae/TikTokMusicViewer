@@ -34,4 +34,5 @@ target_link_libraries(tt_music_viewer
 target_include_directories(tt_music_viewer
         PRIVATE
         ${MINIAUDIO_INCLUDE_DIRS}
+        source
 )

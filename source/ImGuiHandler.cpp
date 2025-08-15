@@ -11,6 +11,9 @@
 
 #include "tiktok/ApiManager.h"
 #include "components/SoundComponent.h"
+#include "screens/MainScreen.h"
+#include "screens/SettingsScreen.h"
+#include "utils/DataStore.h"
 #include "utils/File.h"
 
 #if defined(_MSC_VER) && (_MSC_VER >= 1900) && !defined(IMGUI_DISABLE_WIN32_FUNCTIONS)
@@ -25,9 +28,6 @@ static void glfw_error_callback(const int error, const char* description)
 // Main code
 void ImGuiHandler::Init()
 {
-    const auto& instance = GetInstance();
-    instance.mShouldUpdateMusicList = true;
-
     glfwSetErrorCallback(glfw_error_callback);
     if (!glfwInit())
         return;
@@ -132,32 +132,25 @@ void ImGuiHandler::Render()
                  ImGuiWindowFlags_NoFocusOnAppearing
     );
 
-    auto& api = ApiManager::GetInstance();
-    auto& datastore = DataStore::GetInstance();
-    std::string cookie = api.GetCookie();
-
-    ImGui::Text("Cookie:");
-    if (ImGui::InputText("##", &cookie, ImGuiInputTextFlags_Password | ImGuiInputTextFlags_AlwaysOverwrite))
+    if (ImGui::Button("Main Screen"))
     {
-        api.SetCookie(cookie);
+        instance.mCurrentScreen = MainScreen::GetIdentifier();
     }
-    if (const auto looptext = datastore.GetLooping() ? "Stop Looping" : "Loop"; ImGui::Button(looptext))
-        datastore.Loop();
+    ImGui::SameLine();
+    if (ImGui::Button("Settings"))
+    {
+        instance.mCurrentScreen = SettingsScreen::GetIdentifier();
+    }
 
     ImGui::Separator();
 
-    auto musicList = instance.mMusicList;
-    if (instance.mShouldUpdateMusicList)
+    if (instance.mCurrentScreen == MainScreen::GetIdentifier())
     {
-        musicList = api.MusicList();
-        instance.mMusicList = musicList;
-        instance.mShouldUpdateMusicList = false;
+        MainScreen::Render();
     }
-
-    //int cursor = musicList["cursor"].get<int>();
-    for (const auto& music : musicList["musicList"])
+    else if (instance.mCurrentScreen == SettingsScreen::GetIdentifier())
     {
-        SoundComponent::Render(music);
+        SettingsScreen::Render();
     }
 
     ImGui::End();
