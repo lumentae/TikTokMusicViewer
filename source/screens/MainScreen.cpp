@@ -7,6 +7,8 @@
 
 #include <components/SoundComponent.h>
 
+#include "utils/File.h"
+
 void MainScreen::Render()
 {
     const auto& instance = GetInstance();
@@ -14,21 +16,50 @@ void MainScreen::Render()
     auto& datastore = DataStore::GetInstance();
     std::string cookie = api.GetCookie();
 
+    if (ImGui::Button("Refresh"))
+    {
+        instance.mShouldUpdateMusicList = true;
+        File::DeleteFilesInCacheWithPrefix("musicList_");
+    }
+
+    ImGui::SameLine();
+
     if (const auto looptext = datastore.GetLooping() ? "Stop Looping" : "Loop"; ImGui::Button(looptext))
         datastore.Loop();
 
     ImGui::Separator();
-
-    auto musicList = instance.mMusicList;
-    if (instance.mShouldUpdateMusicList)
+    if (ImGui::Button("<"))
     {
-        musicList = api.MusicList();
-        instance.mMusicList = musicList;
-        instance.mShouldUpdateMusicList = false;
+        if (instance.mPage > 0)
+        {
+            instance.mPage--;
+            instance.mShouldUpdateMusicList = true;
+        }
+    }
+    ImGui::SameLine();
+    ImGui::Text("%d", instance.mPage + 1);
+    ImGui::SameLine();
+    if (ImGui::Button(">"))
+    {
+        if (instance.mPage < 3)
+        {
+            instance.mPage++;
+            instance.mShouldUpdateMusicList = true;
+        }
     }
 
-    //int cursor = musicList["cursor"].get<int>();
-    for (const auto& music : musicList["musicList"])
+    ImGui::Separator();
+
+    if (instance.mShouldUpdateMusicList)
+    {
+        instance.mMusicList = api.MusicList(instance.mCursors[instance.mPage]);
+        instance.mShouldUpdateMusicList = false;
+
+        instance.mCursors.resize(instance.mPage + 2);
+        instance.mCursors[instance.mPage + 1] = instance.mMusicList["cursor"].get<long long>();
+    }
+
+    for (const auto& music : instance.mMusicList["musicList"])
     {
         SoundComponent::Render(music);
     }

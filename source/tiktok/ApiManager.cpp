@@ -1,5 +1,6 @@
 #include "ApiManager.h"
 #include "../utils/File.h"
+#include "components/SoundComponent.h"
 
 void ApiManager::Init()
 {
@@ -26,12 +27,17 @@ void ApiManager::Init()
     mHeaders.emplace("Referer", "https://www.tiktok.com/tiktokstudio/upload?from=creator_center");
 }
 
-nlohmann::json ApiManager::MusicList(const int cursor, const int count)
+nlohmann::json ApiManager::MusicList(const long long cursor, const long long count)
 {
     std::cout << "Loading music list... [cursor=" << cursor << ";count=" << count << "]" << std::endl;
-#if 0
-    return nlohmann::json::parse(File::ReadFile("music_list.json"));
-#else
+
+    const auto cacheName = "musicList_" + std::to_string(cursor) + "_" + std::to_string(count);
+    const auto cacheFile = File::GetFileFromCacheByName(cacheName);
+    if (std::filesystem::exists(cacheFile))
+    {
+        return nlohmann::json::parse(File::ReadFile(cacheFile));
+    }
+
     assert(count <= 35);
 
     httplib::Params params = mParams;
@@ -40,8 +46,16 @@ nlohmann::json ApiManager::MusicList(const int cursor, const int count)
 
     auto result = mClient.Get("/api/user/collect/music_list", params, mHeaders);
     std::cout << result->body << std::endl;
-    return nlohmann::json::parse(result->body);
-#endif
+
+    File::WriteFile(cacheFile, result->body);
+
+    auto json = nlohmann::json::parse(result->body);
+    if (json["status_code"].get<int>() != 0)
+    {
+        throw std::runtime_error("Failed to load music list: " + json["status_msg"].get<std::string>());
+    }
+
+    return json;
 }
 
 std::string ApiManager::GetCookie() const

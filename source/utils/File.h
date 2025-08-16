@@ -127,9 +127,7 @@ public:
 
     static void DownloadSoundAndLoad(const std::string& url, const long long id) {
         // Temporary path without extension
-        std::filesystem::path tempFile = GetFileFromCacheByName(std::to_string(id));
-
-        if (!std::filesystem::exists(tempFile) && !std::filesystem::exists(tempFile.string() + ".mp3")) {
+        if (const std::filesystem::path tempFile = GetFileFromCacheByName(std::to_string(id)); !std::filesystem::exists(tempFile) && !std::filesystem::exists(tempFile.string() + ".mp3")) {
             std::string mimeType;
             std::cout << "Downloading " << url << "...\n";
 
@@ -138,7 +136,6 @@ public:
             if (const std::string ext = GetExtensionFromMime(mimeType); !ext.empty()) {
                 const std::filesystem::path newFile = tempFile.string() + ext;
                 std::filesystem::rename(tempFile, newFile);
-                tempFile = newFile;
             }
         }
     }
@@ -149,6 +146,18 @@ public:
 
         if (const int result = std::system(cmd.c_str()); result != 0) {
             throw std::runtime_error("FFmpeg failed to convert: " + inputPath.string());
+        }
+    }
+
+    static void DeleteFilesInCacheWithPrefix(const std::string& inputPath)
+    {
+        for (const auto cachePath = GetCachePath(); const auto& entry : std::filesystem::directory_iterator(cachePath))
+        {
+            if (!entry.is_regular_file())
+                continue;
+
+            if (entry.path().filename().string().find(inputPath) != std::string::npos)
+                std::filesystem::remove(entry.path());
         }
     }
 };
