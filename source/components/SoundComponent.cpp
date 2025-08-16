@@ -25,7 +25,7 @@ void SoundComponent::Render(nlohmann::json music)
     {
         if (playPause == "Pause")
         {
-            datastore.Reset();
+            datastore.StopSound();
         }
         else
         {

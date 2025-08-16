@@ -16,4 +16,6 @@ public:
 private:
     mutable nlohmann::json mMusicList{};
     mutable bool mShouldUpdateMusicList{true};
+    mutable std::vector<long long> mCursors{0};
+    mutable int mPage{0};
 };

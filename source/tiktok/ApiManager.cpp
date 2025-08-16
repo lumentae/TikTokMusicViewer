@@ -1,5 +1,6 @@
 #include "ApiManager.h"
 #include "../utils/File.h"
+#include "components/SoundComponent.h"
 
 void ApiManager::Init()
 {
@@ -26,7 +27,7 @@ void ApiManager::Init()
     mHeaders.emplace("Referer", "https://www.tiktok.com/tiktokstudio/upload?from=creator_center");
 }
 
-nlohmann::json ApiManager::MusicList(const int cursor, const int count)
+nlohmann::json ApiManager::MusicList(const long long cursor, const long long count)
 {
     std::cout << "Loading music list... [cursor=" << cursor << ";count=" << count << "]" << std::endl;
 #if 0
@@ -40,7 +41,14 @@ nlohmann::json ApiManager::MusicList(const int cursor, const int count)
 
     auto result = mClient.Get("/api/user/collect/music_list", params, mHeaders);
     std::cout << result->body << std::endl;
-    return nlohmann::json::parse(result->body);
+
+    auto json = nlohmann::json::parse(result->body);
+    if (json["status_code"].get<int>() != 0)
+    {
+        throw std::runtime_error("Failed to load music list: " + json["status_msg"].get<std::string>());
+    }
+
+    return json;
 #endif
 }
 

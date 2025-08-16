@@ -14,6 +14,13 @@ void MainScreen::Render()
     auto& datastore = DataStore::GetInstance();
     std::string cookie = api.GetCookie();
 
+    if (ImGui::Button("Refresh"))
+    {
+        instance.mShouldUpdateMusicList = true;
+    }
+
+    ImGui::SameLine();
+
     if (const auto looptext = datastore.GetLooping() ? "Stop Looping" : "Loop"; ImGui::Button(looptext))
         datastore.Loop();
 
@@ -22,12 +29,12 @@ void MainScreen::Render()
     auto musicList = instance.mMusicList;
     if (instance.mShouldUpdateMusicList)
     {
-        musicList = api.MusicList();
+        musicList = api.MusicList(instance.mCursors[instance.mPage]);
         instance.mMusicList = musicList;
         instance.mShouldUpdateMusicList = false;
     }
 
-    //int cursor = musicList["cursor"].get<int>();
+    instance.mCursors.emplace_back(musicList["cursor"].get<long long>());
     for (const auto& music : musicList["musicList"])
     {
         SoundComponent::Render(music);
