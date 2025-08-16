@@ -160,4 +160,9 @@ public:
                 std::filesystem::remove(entry.path());
         }
     }
+
+    static void Delete(const std::filesystem::path& path)
+    {
+        std::filesystem::remove_all(path);
+    }
 };

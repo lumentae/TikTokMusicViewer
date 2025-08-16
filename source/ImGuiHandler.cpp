@@ -11,6 +11,7 @@
 
 #include "tiktok/ApiManager.h"
 #include "components/SoundComponent.h"
+#include "screens/AboutScreen.h"
 #include "screens/MainScreen.h"
 #include "screens/SettingsScreen.h"
 #include "utils/DataStore.h"
@@ -132,26 +133,17 @@ void ImGuiHandler::Render()
                  ImGuiWindowFlags_NoFocusOnAppearing
     );
 
-    if (ImGui::Button("Main Screen"))
-    {
-        instance.mCurrentScreen = MainScreen::GetIdentifier();
-    }
+    DEFINE_SCREEN(Main)
     ImGui::SameLine();
-    if (ImGui::Button("Settings"))
-    {
-        instance.mCurrentScreen = SettingsScreen::GetIdentifier();
-    }
+    DEFINE_SCREEN(Settings)
+    ImGui::SameLine();
+    DEFINE_SCREEN(About)
 
     ImGui::Separator();
 
-    if (instance.mCurrentScreen == MainScreen::GetIdentifier())
-    {
-        MainScreen::Render();
-    }
-    else if (instance.mCurrentScreen == SettingsScreen::GetIdentifier())
-    {
-        SettingsScreen::Render();
-    }
+    HANDLER_SCREEN(Main)
+    HANDLER_SCREEN(Settings)
+    HANDLER_SCREEN(About)
 
     ImGui::End();
 }
