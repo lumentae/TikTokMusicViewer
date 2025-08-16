@@ -16,6 +16,7 @@
 #include "screens/SettingsScreen.h"
 #include "utils/DataStore.h"
 #include "utils/File.h"
+#include "utils/ImGuiExtensions.h"
 
 #if defined(_MSC_VER) && (_MSC_VER >= 1900) && !defined(IMGUI_DISABLE_WIN32_FUNCTIONS)
 #pragma comment(lib, "legacy_stdio_definitions")
@@ -133,11 +134,11 @@ void ImGuiHandler::Render()
                  ImGuiWindowFlags_NoFocusOnAppearing
     );
 
-    DEFINE_SCREEN(Main)
+    DEFINE_SCREEN(Main, "This is the main screen. Here you can listen to your saved sounds, refresh the music list, and loop sounds.")
     ImGui::SameLine();
-    DEFINE_SCREEN(Settings)
+    DEFINE_SCREEN(Settings, "Here you can change the settings of the application.")
     ImGui::SameLine();
-    DEFINE_SCREEN(About)
+    DEFINE_SCREEN(About, "Here you can learn more about the application.")
 
     ImGui::Separator();
 

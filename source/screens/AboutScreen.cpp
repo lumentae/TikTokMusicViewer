@@ -5,6 +5,7 @@
 #include "ImGuiHandler.h"
 #include "utils/Config.h"
 #include "utils/File.h"
+#include "utils/ImGuiExtensions.h"
 
 void AboutScreen::Render()
 {
@@ -20,8 +21,9 @@ void AboutScreen::Render()
 
     if (ImGui::Button("Restart tutorial"))
     {
-        Config::Tutorial = 0;
+        CONFIG_SET_VALUE(Tutorial, 0);
     }
+    EXPLANATION(RestartTutorial, "Restarts the tutorial");
 
     ImGui::Separator();
 
@@ -29,10 +31,12 @@ void AboutScreen::Render()
     {
         File::Delete(File::GetCachePath());
     }
+    EXPLANATION(DeleteCache, "WARNING: Deletes the cache");
     ImGui::SameLine();
     if (ImGui::Button("Delete all data"))
     {
         File::Delete(File::GetCachePath());
         File::Delete("cookie.txt");
     }
+    EXPLANATION(DeleteAllData, "WARNING: Deletes all data");
 }

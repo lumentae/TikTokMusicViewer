@@ -13,18 +13,19 @@ public:
     static void Init();
     static void Render();
 
+    mutable std::string mCurrentScreen{"main"};
+
 private:
     ImGuiHandler() = default;
     ~ImGuiHandler() = default;
-
-    mutable std::string mCurrentScreen{"main"};
 };
 
-#define DEFINE_SCREEN(name) \
+#define DEFINE_SCREEN(name, description) \
     if (ImGui::Button(#name)) \
     { \
         instance.mCurrentScreen = name##Screen::GetIdentifier(); \
-    }
+    } \
+    EXPLANATION(name, description);
 
 #define HANDLER_SCREEN(name) \
     if (instance.mCurrentScreen == name##Screen::GetIdentifier()) \

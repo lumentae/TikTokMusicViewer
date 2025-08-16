@@ -1,6 +1,5 @@
 #include "MainScreen.h"
 
-#include <imgui.h>
 #include <string>
 #include <utils/DataStore.h>
 #include <tiktok/ApiManager.h>
@@ -8,6 +7,7 @@
 #include <components/SoundComponent.h>
 
 #include "utils/File.h"
+#include "utils/ImGuiExtensions.h"
 
 void MainScreen::Render()
 {
@@ -20,13 +20,17 @@ void MainScreen::Render()
         instance.mShouldUpdateMusicList = true;
         File::DeleteFilesInCacheWithPrefix("musicList_");
     }
+    EXPLANATION(Refresh, "Refresh the music list");
 
     ImGui::SameLine();
 
     if (const auto looptext = datastore.GetLooping() ? "Stop Looping" : "Loop"; ImGui::Button(looptext))
         datastore.Loop();
 
+    EXPLANATION(Loop, "Loops the currently playing sound");
+
     ImGui::Separator();
+    ImGui::BeginGroup();
     if (ImGui::Button("<"))
     {
         if (instance.mPage > 0)
@@ -46,6 +50,8 @@ void MainScreen::Render()
             instance.mShouldUpdateMusicList = true;
         }
     }
+    ImGui::EndGroup();
+    EXPLANATION(Pagination, "This allows you to switch pages. Each page has 35 sounds. Due to TikTok's API limitations, you can only access 140 sounds at a time.");
 
     ImGui::Separator();
 
