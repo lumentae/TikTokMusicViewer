@@ -3,16 +3,15 @@
 #include <imgui.h>
 #include <imgui_stdlib.h>
 
-#include "tiktok/ApiManager.h"
+#include "utils/Config.h"
 
 void SettingsScreen::Render()
 {
-    auto& api = ApiManager::GetInstance();
-    std::string cookie = api.GetCookie();
+    std::string cookie = Config::Cookie;
 
     ImGui::Text("Cookie:");
     if (ImGui::InputText("##", &cookie, ImGuiInputTextFlags_Password | ImGuiInputTextFlags_AlwaysOverwrite))
     {
-        api.SetCookie(cookie);
+        CONFIG_SET_VALUE(Cookie, cookie);
     }
 }

@@ -1,22 +1,21 @@
 #include "ApiManager.h"
 #include "../utils/File.h"
 #include "components/SoundComponent.h"
+#include "utils/Config.h"
 
 void ApiManager::Init()
 {
     mClient = httplib::Client("https://www.tiktok.com");
     mClient.set_follow_location(true);
-    mCookie = File::ReadFile("cookie.txt");
 
     mParams.emplace("appId", "1988");
-    mParams.emplace("secUid", "MS4wLjABAAAARLr2tuCQODjwlNVKePpG90sPsMr5w1y_jCnx-cpBjpO39dMSXMaJRRKvr1taYI_Z");
     mParams.emplace("aid", "1988");
 
     mHeaders.emplace("User-Agent",
                      "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36");
     mHeaders.emplace("Accept", "application/json, text/plain, */*");
     mHeaders.emplace("Accept-Language", "de-DE,de;q=0.9,en-DE;q=0.8,en;q=0.7,en-US;q=0.6");
-    mHeaders.emplace("Cookie", mCookie);
+
     mHeaders.emplace("Priority", "u=1, i");
     mHeaders.emplace("Sec-Ch-Ua", R"("Not)A;Brand";v="8", "Chromium";v="138", "Google Chrome";v="138")");
     mHeaders.emplace("Sec-Ch-Ua-Mobile", "?0");
@@ -43,11 +42,14 @@ nlohmann::json ApiManager::MusicList(const long long cursor, const long long cou
     httplib::Params params = mParams;
     params.emplace("cursor", std::to_string(cursor));
     params.emplace("count", std::to_string(count));
+    params.emplace("secUid", Config::SecUid);
 
-    auto result = mClient.Get("/api/user/collect/music_list", params, mHeaders);
+    httplib::Headers headers = mHeaders;
+    headers.emplace("Cookie", Config::Cookie);
+
+    auto result = mClient.Get("/api/user/collect/music_list", params, headers);
     std::cout << result->body << std::endl;
 
-    File::WriteFile(cacheFile, result->body);
 
     auto json = nlohmann::json::parse(result->body);
     if (json["status_code"].get<int>() != 0)
@@ -55,16 +57,7 @@ nlohmann::json ApiManager::MusicList(const long long cursor, const long long cou
         throw std::runtime_error("Failed to load music list: " + json["status_msg"].get<std::string>());
     }
 
+    File::WriteFile(cacheFile, result->body);
+
     return json;
-}
-
-std::string ApiManager::GetCookie() const
-{
-    return mCookie;
-}
-
-void ApiManager::SetCookie(const std::string& cookie)
-{
-    mCookie = cookie;
-    File::WriteFile("cookie.txt", cookie);
 }

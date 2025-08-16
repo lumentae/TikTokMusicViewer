@@ -13,8 +13,6 @@ public:
     static void Init();
     static void Render();
 
-    mutable bool mTutorial;
-
 private:
     ImGuiHandler() = default;
     ~ImGuiHandler() = default;

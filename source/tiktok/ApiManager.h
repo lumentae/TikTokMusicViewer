@@ -15,8 +15,6 @@ public:
 
     void Init();
     nlohmann::json MusicList(long long cursor = 0, long long count = 35);
-    [[nodiscard]] std::string GetCookie() const;
-    void SetCookie(const std::string& cookie);
 
 private:
     ApiManager() = default;
@@ -25,5 +23,4 @@ private:
     httplib::Client mClient{""};
     httplib::Headers mHeaders{};
     httplib::Params mParams{};
-    std::string mCookie;
 };

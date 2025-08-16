@@ -3,6 +3,7 @@
 #include <imgui.h>
 
 #include "ImGuiHandler.h"
+#include "utils/Config.h"
 #include "utils/File.h"
 
 void AboutScreen::Render()
@@ -19,7 +20,7 @@ void AboutScreen::Render()
 
     if (ImGui::Button("Restart tutorial"))
     {
-        ImGuiHandler::GetInstance().mTutorial = true;
+        Config::Tutorial = 0;
     }
 
     ImGui::Separator();

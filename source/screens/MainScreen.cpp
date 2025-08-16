@@ -14,7 +14,6 @@ void MainScreen::Render()
     const auto& instance = GetInstance();
     auto& api = ApiManager::GetInstance();
     auto& datastore = DataStore::GetInstance();
-    std::string cookie = api.GetCookie();
 
     if (ImGui::Button("Refresh"))
     {

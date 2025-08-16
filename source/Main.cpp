@@ -4,6 +4,7 @@
 #include "tiktok/ApiManager.h"
 #define MINIAUDIO_IMPLEMENTATION
 #include "miniaudio.h"
+#include "utils/Config.h"
 #include "utils/DataStore.h"
 
 #define ENABLE_EXCEPTION_HANDLER
@@ -15,6 +16,7 @@ int main()
     try
     {
 #endif
+        Config::Init();
         DataStore::GetInstance().Init();
         ApiManager::GetInstance().Init();
         ImGuiHandler::Init();
