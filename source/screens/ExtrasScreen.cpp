@@ -7,6 +7,13 @@
 #include "utils/File.h"
 #include "utils/ImGuiExtensions.h"
 
+#ifdef WIN32
+#include <windows.h>
+#include <psapi.h>
+#else
+#include <malloc.h>
+#endif
+
 void ExtrasScreen::Render()
 {
     ImGui::Text("TikTok Music Viewer by lumentae");
@@ -16,6 +23,23 @@ void ExtrasScreen::Render()
     {
         std::system("start https://github.com/lumentae/TikTokMusicViewer");
     }
+
+    ImGui::Separator();
+
+    ImGui::Text("FPS: %.1f", ImGui::GetIO().Framerate);
+#ifdef WIN32
+    PROCESS_MEMORY_COUNTERS_EX2 pmc;
+    if (GetProcessMemoryInfo(GetCurrentProcess(), reinterpret_cast<PPROCESS_MEMORY_COUNTERS>(&pmc), sizeof(pmc))) {
+        ImGui::Text("PrivateWorkingSetSize: %zu MB", pmc.PrivateWorkingSetSize / 1024 / 1024);
+    } else {
+        ImGui::Text("Failed to retrieve memory info");
+    }
+#else
+    struct mallinfo mi = mallinfo();
+    ImGui::Text("Heap total: %d KB", mi.arena / 1024);
+    ImGui::Text("Heap used: %d KB", mi.uordblks / 1024);
+    ImGui::Text("Heap free: %d KB", mi.fordblks / 1024);
+#endif
 
     ImGui::Separator();
 
