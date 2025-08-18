@@ -54,7 +54,7 @@ void SettingsScreen::AutoCredentials(const std::string& input)
 
     const std::string cookie = [&]
     {
-        const std::regex regex(R"(secUid=(.*)&)");
+        const std::regex regex(R"raw("cookie": "(.*)")raw");
         std::smatch match;
         auto searchStart(input.cbegin());
         std::string matchStr = "";
