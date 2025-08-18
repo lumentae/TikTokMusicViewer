@@ -11,7 +11,7 @@
 
 #include "tiktok/ApiManager.h"
 #include "components/SoundComponent.h"
-#include "screens/AboutScreen.h"
+#include "screens/ExtrasScreen.h"
 #include "screens/MainScreen.h"
 #include "screens/SettingsScreen.h"
 #include "utils/DataStore.h"
@@ -62,13 +62,6 @@ void ImGuiHandler::Init()
     // Setup scaling
     ImGuiStyle& style = ImGui::GetStyle();
     style.ScaleAllSizes(main_scale);
-
-    // TODO: Emojis
-    //io.Fonts->AddFontFromFileTTF("assets/NotoSans-Regular.ttf", 16.0f);
-    //static ImFontConfig cfg;
-    //cfg.MergeMode = true;
-    //cfg.FontLoaderFlags |= ImGuiFreeTypeLoaderFlags_LoadColor;
-    //io.Fonts->AddFontFromFileTTF("assets/", 16.0f, &cfg);
 
     // Setup Platform/Renderer backends
     ImGui_ImplGlfw_InitForOpenGL(window, true);
@@ -138,13 +131,13 @@ void ImGuiHandler::Render()
     ImGui::SameLine();
     DEFINE_SCREEN(Settings, "Here you can change the settings of the application.")
     ImGui::SameLine();
-    DEFINE_SCREEN(About, "Here you can learn more about the application.")
+    DEFINE_SCREEN(Extras, "Here you can learn more about the application.")
 
     ImGui::Separator();
 
     HANDLER_SCREEN(Main)
     HANDLER_SCREEN(Settings)
-    HANDLER_SCREEN(About)
+    HANDLER_SCREEN(Extras)
 
     ImGui::End();
 }

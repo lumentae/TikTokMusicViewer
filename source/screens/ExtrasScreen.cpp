@@ -1,4 +1,4 @@
-#include "AboutScreen.h"
+#include "ExtrasScreen.h"
 
 #include <imgui.h>
 
@@ -7,7 +7,7 @@
 #include "utils/File.h"
 #include "utils/ImGuiExtensions.h"
 
-void AboutScreen::Render()
+void ExtrasScreen::Render()
 {
     ImGui::Text("TikTok Music Viewer by lumentae");
     ImGui::Text("This application allows you to listen to saved TikTok sounds");

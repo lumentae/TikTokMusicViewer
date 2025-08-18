@@ -6,7 +6,7 @@
 #include "Config.h"
 #include "ImGuiHandler.h"
 #include "screens/MainScreen.h"
-#include "screens/AboutScreen.h"
+#include "screens/ExtrasScreen.h"
 #include "screens/SettingsScreen.h"
 
 enum TutorialState
@@ -19,7 +19,7 @@ enum TutorialState
     Settings,
     Cookie,
     SecUid,
-    About,
+    Extras,
     RestartTutorial,
     DeleteCache,
     DeleteAllData,
@@ -75,8 +75,8 @@ namespace ImGui
             case Settings:
                 ImGuiHandler::GetInstance().mCurrentScreen = SettingsScreen::GetIdentifier();
                 break;
-            case About:
-                ImGuiHandler::GetInstance().mCurrentScreen = AboutScreen::GetIdentifier();
+            case Extras:
+                ImGuiHandler::GetInstance().mCurrentScreen = ExtrasScreen::GetIdentifier();
                 break;
             }
             CONFIG_SET_VALUE(Tutorial, Config::Tutorial + 1);
