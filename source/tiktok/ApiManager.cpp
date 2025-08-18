@@ -3,6 +3,8 @@
 #include "components/SoundComponent.h"
 #include "utils/Config.h"
 
+using namespace std::chrono_literals;
+
 void ApiManager::Init()
 {
     mClient = httplib::Client("https://www.tiktok.com");
@@ -24,13 +26,26 @@ void ApiManager::Init()
     mHeaders.emplace("Sec-Fetch-Mode", "cors");
     mHeaders.emplace("Sec-Fetch-Site", "same-origin");
     mHeaders.emplace("Referer", "https://www.tiktok.com/tiktokstudio/upload?from=creator_center");
+
+    const auto firstMusicList = File::GetFileFromCache("musicList_0");
+    if (!std::filesystem::exists(firstMusicList))
+        return;
+
+    const auto fileTime = std::filesystem::last_write_time(firstMusicList);
+    const auto sysFileTime = std::chrono::clock_cast<std::chrono::system_clock>(fileTime);
+
+    const auto currentTime = std::chrono::system_clock::now();
+    if (const auto invalidationTime = currentTime + std::chrono::days{1}; sysFileTime < invalidationTime)
+    {
+        File::DeleteFilesInCacheWithPrefix("musicList_");
+    }
 }
 
 nlohmann::json ApiManager::MusicList(const long long cursor, const long long count)
 {
     std::cout << "Loading music list... [cursor=" << cursor << ";count=" << count << "]" << std::endl;
 
-    const auto cacheName = "musicList_" + std::to_string(cursor) + "_" + std::to_string(count);
+    const auto cacheName = "musicList_" + std::to_string(cursor);
     const auto cacheFile = File::GetFileFromCacheByName(cacheName);
     if (std::filesystem::exists(cacheFile))
     {
