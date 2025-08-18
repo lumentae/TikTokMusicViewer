@@ -11,5 +11,6 @@ public:
     }
 
     static void Render();
+    static void AutoCredentials(const std::string& input);
     constexpr static std::string GetIdentifier() { return "settings"; }
 };

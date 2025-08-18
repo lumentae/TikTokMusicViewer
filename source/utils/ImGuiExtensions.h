@@ -20,6 +20,7 @@ enum TutorialState
     Settings,
     Cookie,
     SecUid,
+    AutoCredentials,
     Extras,
     RestartTutorial,
     DeleteCache,
