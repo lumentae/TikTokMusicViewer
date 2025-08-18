@@ -16,6 +16,7 @@ enum TutorialState
     Refresh,
     Loop,
     Pagination,
+    Volume,
     Settings,
     Cookie,
     SecUid,

@@ -31,12 +31,12 @@ void ExtrasScreen::Render()
     {
         File::Delete(File::GetCachePath());
     }
-    EXPLANATION(DeleteCache, "WARNING: Deletes the cache");
+    EXPLANATION(DeleteCache, "Deletes the cache");
     ImGui::SameLine();
     if (ImGui::Button("Delete all data"))
     {
         File::Delete(File::GetCachePath());
         File::Delete("cookie.txt");
     }
-    EXPLANATION(DeleteAllData, "WARNING: Deletes all data");
+    EXPLANATION(DeleteAllData, "Deletes all data");
 }

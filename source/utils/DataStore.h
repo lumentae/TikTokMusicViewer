@@ -34,6 +34,13 @@ public:
     void StopSound();
     void Reset();
 
+    [[nodiscard]] int GetVolume() const { return mVolume; }
+    void SetVolume(const int volume)
+    {
+        mVolume = volume;
+        ma_engine_set_volume(&mEngine, mVolume / 100.0f);
+    }
+
 private:
     DataStore() = default;
     ~DataStore();
@@ -43,4 +50,5 @@ private:
     ma_engine mEngine{};
 
     bool mLooping = false;
+    int mVolume{100};
 };

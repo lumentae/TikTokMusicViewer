@@ -6,6 +6,7 @@
 
 #include <components/SoundComponent.h>
 
+#include "components/VolumeComponent.h"
 #include "utils/File.h"
 #include "utils/ImGuiExtensions.h"
 
@@ -52,6 +53,11 @@ void MainScreen::Render()
     }
     ImGui::EndGroup();
     EXPLANATION(Pagination, "This allows you to switch pages. Each page has 35 sounds. Due to TikTok's API limitations, you can only access 140 sounds at a time.");
+
+    ImGui::SameLine();
+
+    VolumeComponent::Render();
+    EXPLANATION(Volume, "Adjust the volume of the currently playing sound");
 
     ImGui::Separator();
 
