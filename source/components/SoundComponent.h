@@ -6,5 +6,5 @@
 class SoundComponent
 {
 public:
-    static void Render(nlohmann::basic_json<> music);
+    static void Render(nlohmann::basic_json<> music, int index);
 };

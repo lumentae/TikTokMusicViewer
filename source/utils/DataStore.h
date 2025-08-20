@@ -28,7 +28,7 @@ public:
 
     [[nodiscard]] ma_sound* GetCurrentlyPlaying() const;
     [[nodiscard]] long long GetCurrentlyPlayingId() const;
-    void PlaySound(long long id);
+    void PlaySound(long long id, int index = -1);
     void Loop();
     [[nodiscard]] bool GetLooping() const;
     void StopSound();
@@ -41,13 +41,21 @@ public:
         ma_engine_set_volume(&mEngine, mVolume / 100.0f);
     }
 
+    void SetAutoPlay(const bool autoPlay) { mAutoPlay = autoPlay; }
+    [[nodiscard]] bool GetAutoPlay() const { return mAutoPlay; }
+
+    void SetCurrentlyPlayingIndex(const int index) { mCurrentlyPlayingIndex = index; }
+    [[nodiscard]] int GetCurrentlyPlayingIndex() const { return mCurrentlyPlayingIndex; }
+
 private:
     DataStore() = default;
     ~DataStore();
 
     ma_sound* mCurrentlyPlaying = nullptr;
     long long mCurrentlyPlayingId = 0;
+    long long mCurrentlyPlayingIndex = 0;
     ma_engine mEngine{};
+    bool mAutoPlay = false;
 
     bool mLooping = false;
     int mVolume{100};

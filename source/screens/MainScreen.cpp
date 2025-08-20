@@ -30,6 +30,14 @@ void MainScreen::Render()
 
     EXPLANATION(Loop, "Loops the currently playing sound");
 
+    ImGui::SameLine();
+
+    const auto autoPlay = datastore.GetAutoPlay();
+    if (const auto autoPlayText = autoPlay ? "Stop Auto Play" : "Auto Play"; ImGui::Button(autoPlayText))
+        datastore.SetAutoPlay(!autoPlay);
+
+    EXPLANATION(AutoPlay, "Loops the currently playing sound");
+
     ImGui::Separator();
     ImGui::BeginGroup();
     if (ImGui::Button("<"))
@@ -70,8 +78,10 @@ void MainScreen::Render()
         instance.mCursors[instance.mPage + 1] = instance.mMusicList["cursor"].get<long long>();
     }
 
+    auto index = 0;
     for (const auto& music : instance.mMusicList["musicList"])
     {
-        SoundComponent::Render(music);
+        SoundComponent::Render(music, index);
+        index++;
     }
 }

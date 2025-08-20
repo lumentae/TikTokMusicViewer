@@ -13,6 +13,11 @@ public:
     static void Render();
     constexpr static std::string GetIdentifier() { return "main"; }
 
+    nlohmann::json GetMusicList() const
+    {
+        return mMusicList;
+    }
+
 private:
     mutable nlohmann::json mMusicList{};
     mutable bool mShouldUpdateMusicList{true};

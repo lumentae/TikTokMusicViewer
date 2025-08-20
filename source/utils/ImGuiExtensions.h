@@ -15,6 +15,7 @@ enum TutorialState
     Main,
     Refresh,
     Loop,
+    AutoPlay,
     Pagination,
     Volume,
     Settings,
@@ -34,7 +35,8 @@ namespace ImGui
         return ImVec2(lhs.x + rhs.x, lhs.y + rhs.y);
     }
 
-    static void HighlightRect(const ImRect& rect) {
+    static void HighlightRect(const ImRect& rect)
+    {
         ImDrawList* draw_list = GetForegroundDrawList();
 
         constexpr float padding = 10.0f;
@@ -48,12 +50,14 @@ namespace ImGui
         draw_list->AddRect(padded.Min, padded.Max, IM_COL32(255, 255, 0, 255), 5.0f, 0, 3.0f);
     }
 
-    static void HighlightItem() {
+    static void HighlightItem()
+    {
         const ImRect rect(GetItemRectMin(), GetItemRectMax());
         HighlightRect(rect);
     }
 
-    static void Explanation(const std::string& text) {
+    static void Explanation(const std::string& text)
+    {
         HighlightItem();
 
         const ImVec2 max = GetItemRectMax();
@@ -61,14 +65,15 @@ namespace ImGui
         SetNextWindowSize(ImVec2(400, 0.0f));
 
         Begin("Explanation", nullptr,
-            ImGuiWindowFlags_NoMove |
-            ImGuiWindowFlags_AlwaysAutoResize |
-            ImGuiWindowFlags_NoCollapse |
-            ImGuiWindowFlags_NoTitleBar);
+              ImGuiWindowFlags_NoMove |
+              ImGuiWindowFlags_AlwaysAutoResize |
+              ImGuiWindowFlags_NoCollapse |
+              ImGuiWindowFlags_NoTitleBar);
 
         TextWrapped("%s", text.c_str());
 
-        if (Button("Next")) {
+        if (Button("Next"))
+        {
             switch (Config::Tutorial)
             {
             case Main:

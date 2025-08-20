@@ -8,7 +8,7 @@
 #include "utils/File.h"
 #include "utils/DataStore.h"
 
-void SoundComponent::Render(nlohmann::json music)
+void SoundComponent::Render(nlohmann::json music, int index)
 {
     const std::string title = music["music"]["title"];
     const std::string authorName = music["music"]["authorName"];
@@ -21,7 +21,8 @@ void SoundComponent::Render(nlohmann::json music)
     ImGui::PushID(idNum);
 
     auto& datastore = DataStore::GetInstance();
-    if (const std::string playPause = datastore.GetCurrentlyPlayingId() == idNum ? "Pause" : "Play"; ImGui::Button(playPause.c_str()))
+    if (const std::string playPause = datastore.GetCurrentlyPlayingId() == idNum ? "Pause" : "Play"; ImGui::Button(
+        playPause.c_str()))
     {
         if (playPause == "Pause")
         {
@@ -30,7 +31,7 @@ void SoundComponent::Render(nlohmann::json music)
         else
         {
             File::DownloadSoundAndLoad(music["music"]["playUrl"], idNum);
-            datastore.PlaySound(idNum);
+            datastore.PlaySound(idNum, index);
         }
     }
     ImGui::PopID();
