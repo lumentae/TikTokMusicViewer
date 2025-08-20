@@ -27,7 +27,6 @@ public:
     }
 
     [[nodiscard]] ma_sound* GetCurrentlyPlaying() const;
-    [[nodiscard]] long long GetCurrentlyPlayingId() const;
     void PlaySound(long long id, int index = -1);
     void Loop();
     [[nodiscard]] bool GetLooping() const;
@@ -43,6 +42,9 @@ public:
 
     void SetAutoPlay(const bool autoPlay) { mAutoPlay = autoPlay; }
     [[nodiscard]] bool GetAutoPlay() const { return mAutoPlay; }
+
+    void SetCurrentlyPlayingId(const long long id) { mCurrentlyPlayingId = id; }
+    [[nodiscard]] long long GetCurrentlyPlayingId() const { return mCurrentlyPlayingId; }
 
     void SetCurrentlyPlayingIndex(const int index) { mCurrentlyPlayingIndex = index; }
     [[nodiscard]] int GetCurrentlyPlayingIndex() const { return mCurrentlyPlayingIndex; }

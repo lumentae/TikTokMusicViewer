@@ -124,20 +124,15 @@ void DataStore::Reset()
 {
     if (mCurrentlyPlaying)
     {
-        //if (!mAutoPlay)
-        //{
+        if (!mAutoPlay)
+        {
             ma_sound_stop(mCurrentlyPlaying);
             ma_sound_uninit(mCurrentlyPlaying);
             delete mCurrentlyPlaying;
             mCurrentlyPlaying = nullptr;
-        //}
+        }
         mCurrentlyPlayingId = 0;
     }
-}
-
-long long DataStore::GetCurrentlyPlayingId() const
-{
-    return mCurrentlyPlayingId;
 }
 
 DataStore::~DataStore()
