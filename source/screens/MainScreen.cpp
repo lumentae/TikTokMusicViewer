@@ -36,7 +36,7 @@ void MainScreen::Render()
     if (const auto autoPlayText = autoPlay ? "Stop Auto Play" : "Auto Play"; ImGui::Button(autoPlayText))
         datastore.SetAutoPlay(!autoPlay);
 
-    EXPLANATION(AutoPlay, "Loops the currently playing sound");
+    EXPLANATION(AutoPlay, "Automatically plays the next sound when the current one ends");
 
     ImGui::Separator();
     ImGui::BeginGroup();
