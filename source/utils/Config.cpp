@@ -8,6 +8,21 @@ namespace Config
 
     void Init()
     {
+        if (std::filesystem::exists("config.json"))
+        {
+            Load();
+        }
+        else
+        {
+            Cookie = "";
+            SecUid = "";
+            Tutorial = 0;
+            Save();
+        }
+    }
+
+    void Load()
+    {
         auto json = nlohmann::json::parse(File::ReadFile("config.json"));
         INTERNAL_LOAD_VALUE(Cookie);
         INTERNAL_LOAD_VALUE(SecUid);

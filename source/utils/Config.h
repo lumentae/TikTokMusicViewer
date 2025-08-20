@@ -10,6 +10,7 @@ namespace Config
     extern int Tutorial;
 
     void Init();
+    void Load();
     void Save();
 };
 
