@@ -11,8 +11,7 @@ This program uses between 40MB to 50MB of RAM while playing music without autopl
 
 ## Requirements
 
-- TikTok account with saved music
-- Your TikTok cookie or a pre-fetched music list in the cache
+- TikTok cookie and secuid ***or*** a pre-fetched music list in the cache
 - ffmpeg installed on your system (for audio conversion)
 
 ---
