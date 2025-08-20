@@ -5,7 +5,7 @@ This program uses between 40MB to 50MB of RAM while playing music without autopl
 ---
 
 ## Limitations
-- Due to problems with miniaudio, old sound files stay in memory after playback
+- Due to problems with miniaudio, old sound files stay in memory after playback when using autoplay
 
 ---
 
