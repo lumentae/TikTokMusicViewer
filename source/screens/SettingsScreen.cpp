@@ -40,7 +40,7 @@ void SettingsScreen::AutoCredentials(const std::string& input)
 {
     const std::string secUid = [&]
     {
-        const std::regex regex(R"(secUid=(.*)&)");
+        const std::regex regex(R"(secUid=(.{76})&)");
         std::smatch match;
         auto searchStart(input.cbegin());
         std::string matchStr = "";
