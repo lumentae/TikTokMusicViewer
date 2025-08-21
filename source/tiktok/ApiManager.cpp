@@ -36,7 +36,7 @@ void ApiManager::Init()
     const auto sysFileTime = std::chrono::clock_cast<std::chrono::system_clock>(fileTime);
 
     const auto currentTime = std::chrono::system_clock::now();
-    if (const auto invalidationTime = currentTime + std::chrono::days{1}; sysFileTime < invalidationTime)
+    if (const auto invalidationTime = currentTime + std::chrono::days{1}; sysFileTime > invalidationTime)
     {
         File::DeleteFilesInCacheWithPrefix("musicList_");
     }
@@ -45,6 +45,7 @@ void ApiManager::Init()
 nlohmann::json ApiManager::MusicList(const long long cursor, const long long count)
 {
     std::cout << "Loading music list... [cursor=" << cursor << ";count=" << count << "]" << std::endl;
+    mEnableApi = false;
 
     const auto cacheName = "musicList_" + std::to_string(cursor);
     const auto cacheFile = File::GetFileFromCacheByName(cacheName);
@@ -66,14 +67,14 @@ nlohmann::json ApiManager::MusicList(const long long cursor, const long long cou
     auto result = mClient.Get("/api/user/collect/music_list", params, headers);
     std::cout << result->body << std::endl;
 
-
     auto json = nlohmann::json::parse(result->body);
     if (json["status_code"].get<int>() != 0)
     {
-        throw std::runtime_error("Failed to load music list: " + json["status_msg"].get<std::string>());
+        std::cerr << "Failed to load music list: " << json["status_msg"].get<std::string>() << std::endl;
+        return json;
     }
 
     File::WriteFile(cacheFile, result->body);
-
+    mEnableApi = true;
     return json;
 }

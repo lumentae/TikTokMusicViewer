@@ -18,6 +18,7 @@ void MainScreen::Render()
 
     if (ImGui::Button("Refresh"))
     {
+        api.SetEnableApi(true);
         instance.mShouldUpdateMusicList = true;
         File::DeleteFilesInCacheWithPrefix("musicList_");
     }
@@ -42,7 +43,7 @@ void MainScreen::Render()
     ImGui::BeginGroup();
     if (ImGui::Button("<"))
     {
-        if (instance.mPage > 0)
+        if (instance.mPage > 0 && api.GetEnableApi())
         {
             instance.mPage--;
             instance.mShouldUpdateMusicList = true;
@@ -53,7 +54,7 @@ void MainScreen::Render()
     ImGui::SameLine();
     if (ImGui::Button(">"))
     {
-        if (instance.mPage < 3)
+        if (instance.mPage < 3 && api.GetEnableApi())
         {
             instance.mPage++;
             instance.mShouldUpdateMusicList = true;
@@ -72,7 +73,14 @@ void MainScreen::Render()
     if (instance.mShouldUpdateMusicList)
     {
         instance.mMusicList = api.MusicList(instance.mCursors[instance.mPage]);
+
+        const auto cacheName = "musicList_" + std::to_string(instance.mCursors[instance.mPage]);
+        const auto cacheFile = File::GetFileFromCacheByName(cacheName);
+
         instance.mShouldUpdateMusicList = false;
+
+        if (instance.mMusicList["status_code"].get<int>() != 0)
+            return;
 
         instance.mCursors.resize(instance.mPage + 2);
         instance.mCursors[instance.mPage + 1] = instance.mMusicList["cursor"].get<long long>();

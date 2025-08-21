@@ -16,6 +16,9 @@ public:
     void Init();
     nlohmann::json MusicList(long long cursor = 0, long long count = 35);
 
+    void SetEnableApi(const bool value) { mEnableApi = value; }
+    [[nodiscard]] bool GetEnableApi() const { return mEnableApi; }
+
 private:
     ApiManager() = default;
     ~ApiManager() = default;
@@ -23,4 +26,6 @@ private:
     httplib::Client mClient{""};
     httplib::Headers mHeaders{};
     httplib::Params mParams{};
+
+    bool mEnableApi = false;
 };
