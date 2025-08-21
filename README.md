@@ -16,6 +16,11 @@ This program uses between 40MB to 50MB of RAM while playing music without autopl
 
 ---
 
+## Troubleshooting
+- If you get this error: `Unhandled exception: [json.exception.type_error.302] type must be string, but is object`, delete the config.json file
+
+---
+
 ## Usage
 1. Start the program
 2. Follow the tutorial
@@ -26,7 +31,7 @@ This program uses between 40MB to 50MB of RAM while playing music without autopl
 ## How to get your cookie
 1. Open the developer tools and go to the **Network** tab
 2. Goto **[https://www.tiktok.com](https://www.tiktok.com)**
-3. Search for **https://www.tiktok.com/api** in the search bar top left
+3. Search for **https://www.tiktok.com/api secuid** in the search bar top left
 4. Right click any request and click **Copy as fetch (Node.js)**
 5. Paste it into the input field in the bottom of the **Settings** page
 
