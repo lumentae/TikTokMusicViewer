@@ -22,6 +22,8 @@ This program uses between 40MB to 50MB of RAM while playing music without autopl
 ---
 
 ## Usage
+If you want to use the provided example music list, download the file **musicList_0** and put it into the cache folder
+
 1. Start the program
 2. Follow the tutorial
 3. Profit!
