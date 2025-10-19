@@ -40,7 +40,12 @@ void ImGuiHandler::Init()
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 0);
 
     // Create window with graphics context
-    const float main_scale = ImGui_ImplGlfw_GetContentScaleForMonitor(glfwGetPrimaryMonitor());
+    const float main_scale = 
+    #if IMGUI_VERSION_NUM > 19190
+    ImGui_ImplGlfw_GetContentScaleForMonitor(glfwGetPrimaryMonitor());
+    #else
+    1;
+    #endif
     // Valid on GLFW 3.3+ only
     GLFWwindow* window = glfwCreateWindow(static_cast<int>(1280 * main_scale), static_cast<int>(800 * main_scale),
                                           "Tiktok Music Viewer", nullptr, nullptr);
@@ -59,10 +64,12 @@ void ImGuiHandler::Init()
     // Setup Dear ImGui style
     ImGui::StyleColorsDark();
 
+    #if IMGUI_VERSION_NUM > 19190
     // Setup scaling
     ImGuiStyle& style = ImGui::GetStyle();
     style.ScaleAllSizes(main_scale);
-
+    #endif
+    
     // Setup Platform/Renderer backends
     ImGui_ImplGlfw_InitForOpenGL(window, true);
     ImGui_ImplOpenGL3_Init(glsl_version);
