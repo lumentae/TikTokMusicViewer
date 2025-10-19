@@ -9,7 +9,7 @@ jobs:
   build:    
     uses: lumentae/actions/.github/workflows/build-cpp.yml@main
     with:
-      vcpkg_packages: CLI11 spdlog CURL nlohmann-json libzippp hash-library
+      vcpkg_packages: glfw3 imgui[glfw-binding,opengl3-binding] cpp-httplib openssl nlohmann-json CURL
       project_name: tt_music_viewer
   release:
     permissions:
