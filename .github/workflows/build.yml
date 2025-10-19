@@ -9,7 +9,7 @@ jobs:
   build:    
     uses: lumentae/actions/.github/workflows/build-cpp.yml@main
     with:
-      vcpkg_packages: glfw3 imgui[glfw-binding,opengl3-binding] cpp-httplib openssl nlohmann-json CURL
+      vcpkg_packages: glfw3 imgui[glfw-binding,opengl3-binding] cpp-httplib openssl nlohmann-json CURL miniaudio
       project_name: tt_music_viewer
       system_packages: libxinerama-dev libxcursor-dev xorg-dev libglu1-mesa-dev pkg-config
   release:
